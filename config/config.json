@@ -1,0 +1,7 @@
+{
+    "secret": "secret",
+    "resetDB": true,
+    "port": 3000,
+    "contactsNumber": 10,
+    "usersNumber": 5
+}
