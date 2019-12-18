@@ -7,11 +7,12 @@ module.exports = (app, db) => {
     app.get('/api/contacts', (req, res) => {
         db.contact
             .findAll({
+                attributes: ['id', 'firstName', 'lastName'],
                 where: {
                     userId: req.jwtId,
                 },
             })
-            .then(({ id, firstName, lastName }) => res.json({ id, firstName, lastName }));
+            .then(contacts => res.json(contacts));
     });
 
     app.post('/api/contact', (req, res) =>
