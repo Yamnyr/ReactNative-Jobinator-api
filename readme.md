@@ -5,8 +5,8 @@ Ce serveur utilise les projets express(serveur http), sequelize(orm), faker(gén
 
 Les données d'un contacts sont :
 * **id** : identifiant unique d'un contact (auto increment par défaut)
-* **firstname** : nom du contact
-* **lastname** : prénom du contact
+* **firstName** : nom du contact
+* **lastName** : prénom du contact
 * **email** : email du contact
 * **phone** : numéro de téléphone du contact
 * **avatar** : photo / avatar du contact
@@ -85,13 +85,13 @@ Permet la création d'un nouveau user avec le nom transmis dans la requète et l
 
 Accès à la liste des contacts de l'utilisateur dont l'**id** est dans le jwt.
 * réponse :
-    * status 200, liste de contacts avec **contact** = { id, firstname, lastname }
+    * status 200, liste de contacts avec **contact** = { id, firstName, lastName }
 
 ### /api/contact/:id avec la méthode get
 
 Accès aux informations completes d'un contact.
 * réponse :
-    * status 200, **contact** = { id, firstname, lastname email, phone, avatar, userId }
+    * status 200, **contact** = { id, firstName, lastName email, phone, avatar, userId }
 Seul le propriétaire de ce contact (userId === jwt.id) peut effectuer cette opération.
 
 ### autres opérations
