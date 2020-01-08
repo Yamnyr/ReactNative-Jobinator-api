@@ -7,7 +7,12 @@ module.exports = (sequelize, DataTypes) => {
                 primaryKey: true,
                 autoIncrement: true,
             },
-            name: DataTypes.STRING,
+            name: {
+                type: DataTypes.STRING,
+                validate: {
+                    len: 1,
+                },
+            },
         },
         {
             freezeTableName: true,
