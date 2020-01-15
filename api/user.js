@@ -3,7 +3,7 @@ const userAuth = require('../jwtControl/actionsauthentication').userAuth;
 module.exports = (app, db) => {
     app.use('/api/user/:id', userAuth);
     app.get('/api/user/:id', (req, res) => {
-        db.user.findByPk(req.params.id).then(result => {
+        db.jwtuser.findByPk(req.params.id).then(result => {
             if (result) res.json(result);
             else {
                 res.status(404).json({
@@ -14,7 +14,7 @@ module.exports = (app, db) => {
         });
     });
     app.post('/api/user', (req, res) => {
-        db.user
+        db.jwtuser
             .create({
                 id: req.jwtId,
                 name: req.body.name,

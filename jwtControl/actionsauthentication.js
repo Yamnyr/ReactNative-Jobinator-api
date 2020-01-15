@@ -9,8 +9,8 @@ module.exports = {
             });
     },
     contactAuthentication: (req, res, next, db) => {
-        db.contact.findByPk(req.params.id).then(result => {
-            if (result && req.jwtId === result.userId) {
+        db.jwtcontact.findByPk(req.params.id).then(result => {
+            if (result && req.jwtId === result.jwtuserId) {
                 req.contactFromId = result;
                 next();
             } else if (result) {

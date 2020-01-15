@@ -5,25 +5,25 @@ module.exports = (app, db) => {
      * Utilise l'identifiant de jwt req.jwtId pour les requètes
      */
     app.get('/api/contacts', (req, res) => {
-        db.contact
+        db.jwtcontact
             .findAll({
                 attributes: ['id', 'firstName', 'lastName'],
                 where: {
-                    userId: req.jwtId,
+                    jwtuserId: req.jwtId,
                 },
             })
             .then(contacts => res.json(contacts));
     });
 
     app.post('/api/contact', (req, res) =>
-        db.contact
+        db.jwtcontact
             .create({
                 firstName: req.body.name,
                 lastName: req.body.surname,
                 email: req.body.email,
                 phone: req.body.phone,
                 avatar: req.body.avatar,
-                userId: req.jwtId,
+                jwtuserId: req.jwtId,
             })
             .then(result => res.status(201).json(result))
             .catch(error =>
@@ -42,7 +42,7 @@ module.exports = (app, db) => {
     app.get('/api/contact/:id', (req, res) => res.json(req.contactFromId));
 
     app.put('/api/contact/:id', (req, res) =>
-        db.contact
+        db.jwtcontact
             .update(
                 {
                     firstName: req.body.firstName,
@@ -61,7 +61,7 @@ module.exports = (app, db) => {
     );
 
     app.delete('/api/contact/:id', (req, res) =>
-        db.contact
+        db.jwtcontact
             .destroy({
                 where: {
                     id: req.params.id,

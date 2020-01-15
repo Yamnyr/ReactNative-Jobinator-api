@@ -1,27 +1,27 @@
 module.exports = (app, db) => {
     app.get('/admin/contacts', (req, res) => {
-        db.contact.findAll().then(result => {
+        db.jwtcontact.findAll().then(result => {
             res.json(result);
         });
     });
 
-    app.get('/admin/contact/:id', (req, res) => db.contact.findByPk(req.params.id).then(result => res.json(result)));
+    app.get('/admin/contact/:id', (req, res) => db.jwtcontact.findByPk(req.params.id).then(result => res.json(result)));
 
     app.post('/admin/contact', (req, res) =>
-        db.contact
+        db.jwtcontact
             .create({
                 name: req.body.name,
                 surname: req.body.surname,
                 email: req.body.email,
                 phone: req.body.phone,
                 avatar: req.body.avatar,
-                userId: req.body.userId,
+                jwtuserId: req.body.userId,
             })
             .then(result => res.json(result)),
     );
 
     app.put('/admin/contact/:id', (req, res) =>
-        db.contact
+        db.jwtcontact
             .update(
                 {
                     name: req.body.name,
@@ -29,7 +29,7 @@ module.exports = (app, db) => {
                     email: req.body.email,
                     phone: req.body.phone,
                     avatar: req.body.avatar,
-                    userId: req.body.userId,
+                    jwtuserId: req.body.userId,
                 },
                 {
                     where: {
@@ -41,7 +41,7 @@ module.exports = (app, db) => {
     );
 
     app.delete('/admin/contact/:id', (req, res) =>
-        db.contact
+        db.jwtcontact
             .destroy({
                 where: {
                     id: req.params.id,
@@ -51,11 +51,11 @@ module.exports = (app, db) => {
     );
 
     app.get('/admin/user/:id', (req, res) => {
-        db.user.findByPk(req.params.id).then(result => res.json(result));
+        db.jwtuser.findByPk(req.params.id).then(result => res.json(result));
     });
 
     app.get('/admin/users', (req, res) => {
-        db.user.findAll().then(result => {
+        db.jwtuser.findAll().then(result => {
             res.json(result);
         });
     });

@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
     const User = sequelize.define(
-        'user',
+        'jwtuser',
         {
             id: {
                 type: DataTypes.INTEGER,
@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
     );
 
     User.associate = models => {
-        User.hasMany(models.contact);
+        User.hasMany(models.jwtcontact);
     };
 
     return User;

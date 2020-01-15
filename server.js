@@ -24,17 +24,17 @@ faker.locale = 'fr';
 db.sequelize.sync({ force: config.resetDB }).then(() => {
     if (config.resetDB) {
         // populate author table with dummy data
-        db.user.bulkCreate(
+        db.jwtuser.bulkCreate(
             times(config.usersNumber, () => ({
                 name: faker.name.findName(),
             })),
         );
         // populate post table with dummy data
-        db.contact.bulkCreate(
+        db.jwtcontact.bulkCreate(
             times(config.contactsNumber, () => ({
                 firstName: faker.name.firstName(),
                 lastName: faker.name.lastName(),
-                userId: random(1, config.usersNumber),
+                jwtuserId: random(1, config.usersNumber),
                 email: faker.internet.email(),
                 phone: faker.phone.phoneNumber(),
                 avatar: faker.image.avatar(),
