@@ -18,8 +18,8 @@ module.exports = (app, db) => {
     app.post('/api/contact', (req, res) =>
         db.jwtcontact
             .create({
-                firstName: req.body.name,
-                lastName: req.body.surname,
+                firstName: req.body.firstName,
+                lastName: req.body.lastName,
                 email: req.body.email,
                 phone: req.body.phone,
                 avatar: req.body.avatar,
