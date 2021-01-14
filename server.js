@@ -37,7 +37,7 @@ db.sequelize.sync({ force: config.resetDB }).then(() => {
                 jwtuserId: random(1, config.usersNumber),
                 email: faker.internet.email(),
                 phone: faker.phone.phoneNumber(),
-                avatar: faker.image.avatar(),
+                avatar: 'https://i.pravatar.cc/150?img=' + Math.floor(Math.random() * 70),
             })),
         );
     }
