@@ -24,8 +24,6 @@ Téléchargez les fichiers du dépôt directement ou par clonage du dépôt git.
 Installez les modules nécessaires avec la commande :
 > npm install
 
-Configurer la connexion à votre base de données mysql en renseignant les champs du fichier config/dbconfig.json
-
 Lancez le serveur en vous mettant dans le répertoire du projet et en tapant :
 > npm start
 

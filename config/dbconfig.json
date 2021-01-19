@@ -2,7 +2,7 @@
   "username": "",
   "password": "",
   "database": "",
-  "host": "mysql",
-  "dialect": "mysql",
+  "host": "users.sqlite",
+  "dialect": "sqlite",
   "operatorsAliases": false
 }
