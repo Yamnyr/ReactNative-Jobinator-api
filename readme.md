@@ -94,3 +94,9 @@ Seul le propriétaire de ce contact (userId === jwt.id) peut effectuer cette op�
 
 Cette api permet aussi d'ajouter (/api/contact en méthode **post**), de supprimer (/api/contact/:id en méthode **delete**) ou de modifier (/api/contact/:id en méthode **put**) un contact. Seul le propriétaire de ce contact peur effectuer ces opérations.
 
+### Access debug à l'API
+
+Vous pouvez accéder aux données users et contacts sans token pour en obtenir la liste en utilisez les routes suivantes :
+
+* /admin/users
+* /admin/contacts
