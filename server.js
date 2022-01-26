@@ -1,6 +1,6 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import faker from 'faker';
+import faker from '@faker-js/faker';
 import times from 'lodash.times';
 import random from 'lodash.random';
 import db from './models';
