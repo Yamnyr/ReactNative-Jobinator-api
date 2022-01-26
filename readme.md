@@ -38,10 +38,8 @@ Le fichier config/config.json vous permet de configurer le fonctionnement de vot
 * **usersNumber (integer)** : nombre d'utilisateurs factices générés à l'initialisation de la BD (resetDB = true).
 
 ## Structure des tables de la base de données mysql
-Ce serveur se connectera à un serveur de bd **mysql**, dont vous devrez préciser les identifiants de connexion dans le fichier config/dbconfig.json, et créera si nécessaire, une table de nom **contact** et une table de nom **user**. La relation 1/n entre **user** et **contact** implique la présence de l'identifiant de l'utilisateur **userId** dans la table **contact**.
 
-Vous pourrez peupler ces tables de données factices à l'initialisation de la BD mais la relation entre contact:userId et user:id n'est pas assuré. Il se peut donc que des users n'aient pas de contact associé.
-
+Les données sont stockées par défaut dans une base de données `users.sqlite` mais il est possible d'utiliser une autre BD en configurant celle-ci dans le fichier `config/dbconfig.json`.
 
 ## API avec authentification
 
