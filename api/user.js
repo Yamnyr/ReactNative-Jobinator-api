@@ -1,23 +1,22 @@
-const userAuth = require('../jwtControl/actionsauthentication').userAuth;
-
 module.exports = (app, db) => {
-    app.use('/api/user/:id', userAuth);
-    app.get('/api/user/:id', (req, res) => {
-        db.jwtuser.findByPk(req.params.id).then(result => {
+    app.get('/api/user', (req, res) => {
+        db.user.findByPk(req.jwtId).then(result => {
             if (result) res.json(result);
             else {
                 res.status(404).json({
                     code: 'notfound',
-                    message: 'User not found',
+                    message: `User id ${jwtId} not found`,
                 });
             }
         });
     });
-    app.post('/api/user', (req, res) => {
-        db.jwtuser
+    app.post('/register', (req, res) => {
+        db.user
             .create({
-                id: req.jwtId,
                 name: req.body.name,
+                status: req.body.status,
+                login: req.body.login,
+                password: req.body.password,
             })
             .then(result => res.status(201).json(result))
             .catch(error =>
@@ -26,5 +25,36 @@ module.exports = (app, db) => {
                     message: error.errors[0].message,
                 }),
             );
+    });
+
+    const KJUR = require('jsrsasign');
+    const { secret } = require('../config/config');
+
+    function getTokens({id}) {
+        let jwt = KJUR.jws.JWS.sign(null, { alg: 'HS256' }, { sub: id }, secret);
+        return { jwt };
+    }
+            
+    app.post('/login', (req, res) => {
+        let { body } = req;
+
+        if (!body || !(body.login && body.password)) {
+            res.status(401).json({ error: 'nocredentials', message: 'Credentials requiered !' });
+        }
+
+        if (body.password) {
+            db.user.findOne({where: { login: body.login, password: body.password } })
+                .then(user => {
+                    if (!user) {
+                        res.status(401).json({
+                            error: 'wrongcredentials',
+                            message: 'Wrong login or password',
+                        });
+                    } else {
+                        res.json(getTokens(user));
+                    }
+    
+                })
+        }    
     });
 };

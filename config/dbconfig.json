@@ -2,7 +2,7 @@
   "username": "",
   "password": "",
   "database": "",
-  "host": "users.sqlite",
+  "host": "jobs.sqlite",
   "dialect": "sqlite",
   "operatorsAliases": false
 }

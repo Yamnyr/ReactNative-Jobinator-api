@@ -4,13 +4,15 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "npx nodemon --exec babel-node server.js"
+    "start": "npx nodemon --exec babel-node server.js",
+    "forward": "adb reverse tcp:8000 tcp:8000"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.17.2",
-    "jsrsasign": "^10.5.1",
+    "jsrsasign": "^10.5.10",
     "sequelize": "^6.14.1",
     "sequelize-cli": "^6.4.1",
     "sqlite3": "^5.0.2",

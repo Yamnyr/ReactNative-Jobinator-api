@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
     const User = sequelize.define(
-        'jwtuser',
+        'user',
         {
             id: {
                 type: DataTypes.INTEGER,
@@ -9,10 +9,20 @@ module.exports = (sequelize, DataTypes) => {
             },
             name: {
                 type: DataTypes.STRING,
-                validate: {
-                    len: 1,
-                },
             },
+            status: {
+                type: DataTypes.ENUM,
+                values: ['entreprise', 'candidat'],
+                allowNull: false,
+            },
+            login: {
+                type: DataTypes.STRING,
+                allowNull: false,
+            },
+            password: {
+                type: DataTypes.STRING,
+                allowNull: false,
+            }
         },
         {
             freezeTableName: true,
@@ -20,7 +30,8 @@ module.exports = (sequelize, DataTypes) => {
     );
 
     User.associate = models => {
-        User.hasMany(models.jwtcontact);
+        User.hasMany(models.job);
+        User.hasMany(models.candidate);
     };
 
     return User;
