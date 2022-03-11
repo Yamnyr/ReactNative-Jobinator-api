@@ -5,7 +5,7 @@ import apiJob from './api/job';
 import apiUser from './api/user';
 import apiAdmin from './api/admin';
 import config from './config/config';
-import jwtAuth from './jwtControl/auth';
+import jwtAuth from './control/auth';
 import cors from 'cors';
 
 const app = express();
@@ -46,7 +46,7 @@ db.sequelize.sync({ force: config.resetDB }).then(() => {
                 { 
                     "id": 2,
                     "name": "dupont", 
-                    "status": "particulier",
+                    "status": "candidat",
                     "login": "toto",
                     "password": "toto"
                 }
