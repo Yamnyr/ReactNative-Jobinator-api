@@ -4,6 +4,7 @@ import db from './models';
 import apiJob from './api/job';
 import apiUser from './api/user';
 import apiAdmin from './api/admin';
+import apiCandidate from './api/candidate';
 import config from './config/config';
 import jwtAuth from './control/auth';
 import cors from 'cors';
@@ -17,6 +18,7 @@ app.use('/api', jwtAuth);
 
 apiJob(app, db);
 apiUser(app, db);
+apiCandidate(app, db);
 apiAdmin(app, db);
 
 app.use("/admin/users", (req, res, next) => {

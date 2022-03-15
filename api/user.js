@@ -1,7 +1,6 @@
-
 const KJUR = require('jsrsasign');
 const { secret } = require('../config/config');
-const { entrepriseControl } = require('../control/actionsauthentication');
+const { entrepriseControl, authenticateUser } = require('../control/actionsauthentication');
 
 function getTokens({ id }) {
 	let jwt = KJUR.jws.JWS.sign(null, { alg: 'HS256' }, { sub: id }, secret);
@@ -49,30 +48,23 @@ module.exports = (app, db) => {
 			);
 	});
 
-	app.get('/api/user', (req, res) => {
-		db.user.findByPk(req.jwtId).then(result => {
-			if (result) res.json(result);
-			else {
-				res.status(404).json({
-					code: 'notfound',
-					message: `User id ${jwtId} not found`,
-				});
-			}
+	app.get('/api/user',
+		(req, res, next) => authenticateUser(req, res, next, db),
+		(req, res) => {
+			res.json(req.authenticateUser);
 		});
-	});
 
-	/* check if user is an entreprise */
-	app.use('/api/user/id', entrepriseControl);
-
-	app.get('/api/user/id', async (req, res) => {
-		db.user.findByPk(req.jwtId).then(result => {
-			if (result) res.json(result);
-			else {
-				res.status(404).json({
-					code: 'notfound',
-					message: `User id ${jwtId} not found`,
-				});
-			}
+	app.get('/api/user/id',
+		(req, res, next) => entrepriseControl(req, res, next, db),
+		async (req, res) => {
+			db.user.findByPk(req.params.id).then(result => {
+				if (result) res.json(result);
+				else {
+					res.status(404).json({
+						code: 'notfound',
+						message: `User id ${req.params.id} not found`,
+					});
+				}
+			});
 		});
-	});
 };

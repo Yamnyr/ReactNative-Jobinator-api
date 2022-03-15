@@ -1,97 +1,120 @@
+const { entrepriseControl, authenticateUser, getJobById } = require("../control/actionsauthentication");
+
 module.exports = (app, db) => {
-    /**
-     * Utilise l'identifiant de jwt req.jwtId et le status de l'utilisateur pour la réponse
-     */
-    app.get('/api/jobs/ent', (req, res) => {
-        db.user.findByPk(req.jwtId)
-            .then(result => {
-                if (result.status !== "entreprise") {
-                    res.json([])
-                } else {
-                    db.job
-                        .findAll({
-                            attributes: ['id', 'name'],
-                            where: {
-                                userId: req.jwtId,
-                            },
-                        })
-                        .then(jobs => res.json(jobs));
-                }
-            });
-    });
+	/* liste les jobs de l'entreprise connecté ou tous les jobs pour un candidat connecté */
+	app.get('/api/jobs',
+		(req, res, next) => authenticateUser(req, res, next, db),
+		(req, res) => {
+			if (req.authenticateUser.status === "entreprise") {
+				return db.job
+					.findAll({
+						attributes: ['id', 'name'],
+						where: {
+							userId: req.jwtId,
+						},
+					})
+					.then(jobs => res.json(jobs));
+			} else {
+				return db.job
+					.findAll({
+						attributes: ['id', 'name'],
+					})
+					.then(jobs => res.json(jobs));
+			}
+		});
 
-    app.get('/api/jobs/candidat', (req, res) => {
-        db.job
-            .findAll({
-                attributes: ['id', 'name'],
-            })
-            .then(jobs => res.json(jobs));
-    });
+	app.post('/api/jobs',
+		(req, res, next) => entrepriseControl(req, res, next, db),
+		(req, res) =>
+			db.job
+				.create({
+					...req.body,
+					userId: req.jwtId,
+				})
+				.then(result => res.status(201).json(result))
+				.catch(error =>
+					res.status(400).json({
+						code: 'badrequest',
+						message: error.errors[0].message,
+					})
+				)
+	);
 
-    app.post('/api/jobs', (req, res) =>
-        db.user.findByPk(req.jwtId)
-            .then(result => {
-                if (result.status === "entreprise") {
-                    db.job
-                        .create({
-                            ...req.body,
-                            userId: req.jwtId,
-                        })
-                        .then(result => res.status(201).json(result))
-                        .catch(error =>
-                            res.status(400).json({
-                                code: 'badrequest',
-                                message: error.errors[0].message,
-                            })
-                        )
-                }
-            })
-    );
+	app.get('/api/jobs/:id',
+		(req, res, next) => authenticateUser(req, res, next, db),
+		(req, res, next) => getJobById(req, res, next, db),
+		(req, res) => {
+			if (req.authenticateUser.status === "entreprise") {
+				if (req.job.userId === req.jwtId)
+					res.json(req.job)
+				else {
+					res.status(403).json({
+						code: `accessdenied`,
+						message: `Job access denied for user ${req.jwtId}`,
+					});
+				}
+			} else {
+				res.json(req.job);
+			}
+		});
 
-    /**
-     * Controle l'autorisation d'accès au contact :id
-     */
-    /*app.use('/api/jobs/:id', (req, res, next) => {
-        db.job.findByPk(req.params.id).then(result => {
-            if (result && req.jwtId === result.userId) {
-                req.jobFromId = result;
-                next();
-            } else if (result) {
-                res.status(403).json({
-                    code: `accessdenied`,
-                    message: `Job access denied for user ${req.jwtId}`,
-                });
-            } else {
-                res.status(404).json({
-                    code: 'notfound',
-                    message: 'Job not found',
-                });
-            }
-        });
-    });*/
+	app.put('/api/jobs/:id',
+		(req, res, next) => getJobById(req, res, next, db),
+		(req, res) => {
+			if (req.jwtId === req.job.userId) {
+				db.job
+					.update({
+						...req.body,
+					}, {
+						where: {
+							id: req.params.id,
+						},
+					},
+					)
+					.then(result => res.json(result))
+			} else {
+				res.status(403).json({
+					code: `accessdenied`,
+					message: `Job access denied for user ${req.jwtId}`,
+				});
+			}
+		});
 
-    app.get('/api/jobs/:id', (req, res) => db.job.findByPk(req.params.id).then(result => res.json(result)));
+	app.delete('/api/jobs/:id',
+		(req, res, next) => getJobById(req, res, next, db),
+		(req, res) => {
+			if (req.jwtId === req.job.userId) {
+				db.job
+					.destroy({
+						where: {
+							id: req.params.id,
+						},
+					})
+					.then(result => res.status(204).json(result));
+			} else {
+				res.status(403).json({
+					code: `accessdenied`,
+					message: `Job access denied for user ${req.jwtId}`,
+				});
+			}
+		});
 
-    app.put('/api/jobs/:id', (req, res) =>
-        db.job
-            .update({
-                ...req.body,
-            }, {
-                where: {
-                    id: req.params.id,
-                },
-            },
-            )
-            .then(result => res.json(result))
-    );
-
-    app.delete('/api/jobs/:id', (req, res) =>
-        db.job
-            .destroy({
-                where: {
-                    id: req.params.id,
-                },
-            })
-            .then(result => res.status(204).json(result)),
-    );
+	app.get('/api/jobs/:id/candidates',
+		(req, res, next) => getJobById(req, res, next, db),
+		(req, res) => {
+			if (req.jwtId === req.job.userId) {
+				db.candidate.findAll({
+					attributes: ['userId'],
+					where: {
+						jobId: req.job.id,
+					},
+				})
+					.then(candidates => res.json(candidates))
+			} else {
+				res.status(403).json({
+					code: `accessdenied`,
+					message: `Job access denied for user ${req.jwtId}`,
+				});
+			}
+		});
 };
