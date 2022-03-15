@@ -1,103 +1,69 @@
-import express from 'express';
-import bodyParser from 'body-parser';
-import db from './models';
-import apiJob from './api/job';
-import apiUser from './api/user';
-import apiAdmin from './api/admin';
-import apiCandidate from './api/candidate';
-import config from './config/config';
-import jwtAuth from './control/auth';
-import cors from 'cors';
+const express = require('express');
+const bodyParser = require('body-parser');
+const cors = require('cors');
+const db = require('./models');
+const apiJob = require('./api/job');
+const apiUser = require('./api/user');
+const apiAdmin = require('./api/admin');
+const apiCandidate = require('./api/candidate');
+const {verbose} = require('./config/config');
+const jwtAuth = require('./control/auth');
 
-const app = express();
+let httpServer = null;
 
-app.use(cors());
-app.use(bodyParser.json());
+function launch(port) {
+	return new Promise((resolve) => {
+		const app = express();
 
-app.use('/api', jwtAuth);
+		app.use(cors());
+		app.use(bodyParser.json());
 
-apiJob(app, db);
-apiUser(app, db);
-apiCandidate(app, db);
-apiAdmin(app, db);
+		app.use('/api', jwtAuth);
 
-app.use("/admin/users", (req, res, next) => {
-    console.log("req on admin/users");
-    next();
-})
+		apiJob(app, db);
+		apiUser(app, db);
+		apiCandidate(app, db);
+		apiAdmin(app, db);
 
-db.sequelize.sync({ force: config.resetDB }).then(() => {
-    if (config.resetDB) {
-        // populate author table with dummy data
-        db.user.bulkCreate(
-            [
-                { 
-                    "id": 1, 
-                    "name": "IUT", 
-                    "status": "entreprise",
-                    "login": "gillar01",
-                    "password": "admin"
-                },
-                {
-                    "id": 3, 
-                    "name": "entreprise", 
-                    "status": "entreprise",
-                    "login": "ent1",
-                    "password": "ent1"
-                },
-                { 
-                    "id": 2,
-                    "name": "dupont", 
-                    "status": "candidat",
-                    "login": "toto",
-                    "password": "toto"
-                }
-            ]
-        );
-        // populate post table with dummy data
-        db.job.bulkCreate(
-            [
-                {
-                    "id": 1,
-                    "userId": 1,
-                    "name": "surveillant H/F",
-                    "description": "Une superbe offre de stage à l'IUT pour forcer les étudiants à arriver à l'heure !",
-                },
-                {
-                    "id": 2,
-                    "userId": 1,
-                    "name": "developeur web fullStack",
-                    "description": "Une autre offre pour coder le site web de l'URCA",
-                },
-                {
-                    "id": 3,
-                    "userId": 1,
-                    "name": "developeur web React / Symfony",
-                    "description": "Une offre pour créer le SI du département informatique",
-                },
-                {
-                    "id": 4,
-                    "userId": 3,
-                    "name": "concepteur architecte",
-                    "description": "refaire l'infra",
-                }
-            ]
-        );
-        db.candidate.bulkCreate(
-            [
-                {
-                    "id": 1,
-                    "jobId": 1,
-                    "userId": 2
-                },
-                {
-                    "id": 2,
-                    "jobId": 3,
-                    "userId": 2
-                }
-            ]
-        );
-    }
+		app.use("/admin", (req, res, next) => {
+			verbose && console.log("req on admin data");
+			next();
+		})
 
-    app.listen(config.port, () => console.log(`App listening on port ${config.port}!`));
-});
+		app.get('/', (req, res) => {
+			res.send();
+		})
+
+		httpServer = app.listen(port, () => {
+			console.log(`App listening on port ${port}!`);
+			resolve();
+		});
+	})
+}
+
+function createDb({verbose, resetDB}, initData) {
+	db.sequelize.sync({ force: resetDB, logging: verbose }).then(() => {
+		if (resetDB) {
+			// populate author table with dummy data
+			db.user.bulkCreate(
+				initData.user,
+				{logging: verbose}
+			);
+			// populate post table with dummy data
+			db.job.bulkCreate(
+				initData.job,
+				{logging: verbose}
+			);
+			db.candidate.bulkCreate(
+				initData.candidate,
+				{logging: verbose}
+			);
+		}
+	});
+}
+
+function stop() {
+	httpServer.close();
+}
+
+module.exports = { launch, stop, createDb };

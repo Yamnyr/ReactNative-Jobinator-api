@@ -1,5 +1,5 @@
 const JWS = require('jsrsasign').jws.JWS;
-const {secret} = require('../config/config');
+const {secret, verbose} = require('../config/config');
 
 module.exports = async (req, res, next) => {
     let error = '';
@@ -26,7 +26,7 @@ module.exports = async (req, res, next) => {
 
         next();
     } catch (errorMessage) {
-        console.log(errorMessage)
+        verbose && console.log(errorMessage)
         res.status(401).json({ code: error, message: errorMessage.message });
     }
 };

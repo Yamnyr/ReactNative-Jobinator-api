@@ -4,7 +4,6 @@ module.exports = (app, db) => {
     });
 
     app.get('/admin/users', (req, res) => {
-        console.log("app.get('/admin/users'");
         db.user.findAll().then(result => {
             res.json(result);
         });
