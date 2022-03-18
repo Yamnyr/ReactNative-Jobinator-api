@@ -1,4 +1,4 @@
-const { launch, createDb } = require('../server');
+const { launch, createDb } = require('./server');
 const env = require('./config/config');
 
 const data = {
@@ -67,4 +67,4 @@ const data = {
 
 launch(env.port);
 
-createDb(config, data);
+createDb(env, data);

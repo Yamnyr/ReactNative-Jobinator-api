@@ -5,14 +5,13 @@ const fetch = require('node-fetch');
 const { launch, stop, createDb } = require('../server');
 
 chai.use(chaiAsPromised);
+const { expect, should } = chai;
 
 const config = {
 	port: 8888,
 	resetDB: true,
 	verbose: false,
 }
-
-const { expect, should } = chai;
 
 const data = {
 	user: [
@@ -95,43 +94,41 @@ const data = {
 	]
 }
 
-
 const url = 'http://localhost:' + config.port;
 
 describe('server', function () {
 	before(function () {
-		launch(config.port);
-		createDb(config, data);
+		return launch(config.port).then(() => createDb(config, data))
 	})
 
 	it("server up with status 200", function () {
-		return expect(fetch("http://localhost:" + config.port))
+		return expect(fetch(url))
 			.to.eventually.have.property('status', 200);
 	})
 	it("server admin route /admin/users give all users", function () {
-		return expect(fetch("http://localhost:" + config.port + "/admin/users").then(res => res.json()))
+		return expect(fetch(url + "/admin/users").then(res => res.json()))
 			.to.eventually.be.an('array')
 			.length(4);
 	})
 
 	describe("/api route need authorization headers", function () {
 		it("get /api/users failed with no autorization headers", function () {
-			return expect(fetch("http://localhost:" + config.port + "/api/users"))
+			return expect(fetch(url + "/api/users"))
 				.to.eventually.have.property('status', 401);
 		})
 		it("get /api/jobs/id failed with no autorization headers", function () {
-			return expect(fetch("http://localhost:" + config.port + "/api/jobs/12"))
+			return expect(fetch(url + "/api/jobs/12"))
 				.to.eventually.have.property('status', 401);
 		})
 		it("get /api/candidates/id failed with no autorization headers", function () {
-			return expect(fetch("http://localhost:" + config.port + "/api/candidates/12"))
+			return expect(fetch(url + "/api/candidates/12"))
 				.to.eventually.have.property('status', 401);
 		})
 	})
 	describe("/api route need a valid jwt in 'autorization: Bearer' headers", function () {
 		it("get /api/users failed with no valid jwt", function () {
 			return expect(fetch(
-				"http://localhost:" + config.port + "/api/users",
+				url + "/api/users",
 				{
 					headers: {
 						Autorization: "Bearer a.b.c",
@@ -142,7 +139,7 @@ describe('server', function () {
 		})
 		it("get /api/jobs/id failed with no autorization headers", function () {
 			return expect(fetch(
-				"http://localhost:" + config.port + "/api/jobs",
+				url + "/api/jobs",
 				{
 					headers: {
 						Autorization: "Bearer a.b.c",
@@ -153,7 +150,7 @@ describe('server', function () {
 		})
 		it("get /api/candidates/id failed with no autorization headers", function () {
 			return expect(fetch(
-				"http://localhost:" + config.port + "/api/candidates",
+				url + "/api/candidates",
 				{
 					headers: {
 						Autorization: "Bearer a.b.c",
@@ -164,7 +161,23 @@ describe('server', function () {
 		})
 	})
 
-	after(function () {
-		stop();
+	describe("login", function() {
+		it("/login with bad credential give 401", function () {
+			this.timeout(5000);
+			return expect(fetch(
+				url + "/login",
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({login: "user1", password: "user1"})
+				}
+			)).to.eventually.have.property('status', 401);
+		})	
+	})
+
+	after(function () { 
+		stop(); 
 	})
 })

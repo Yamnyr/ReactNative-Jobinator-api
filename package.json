@@ -4,7 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "mocha",
+    "test": "mocha -w test",
     "start": "npx nodemon --exec babel-node index.js",
     "forward": "adb reverse tcp:8000 tcp:8000"
   },
