@@ -11,7 +11,12 @@ module.exports = (app, db) => {
 	app.post('/login', (req, res) => {
 		let { body } = req;
 
-		if (body?.password && body?.login) {
+		if (! body) {
+			res.status(401).json({ error: 'nocredentials', message: 'Credentials requiered !' });
+			return;
+		}
+
+		if (body.password && body.login) {
 			db.user.findOne({ where: { login: body.login, password: body.password } })
 				.then(user => {
 					if (!user) {

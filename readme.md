@@ -85,15 +85,14 @@ Permet d'obtenir les informations de l'utilisateur correspondant au token **jwt*
     * status 200, **user** = { id, name, status, login, password }
 
 
-### /api/jobs/ent avec la méthode get et jwt
+### /api/jobs avec la méthode get et jwt
 
-Accès à la liste des jobs de l'entreprise authentifiée par le jwt
-* réponse :
-    * status 200, liste de **jobs** = [{id, name}, {id, name}, ...]
+Accès à la liste des jobs de l'utilisateur authentifié par le jwt en fonction de son status
 
-### /api/jobs/candidat avec la méthode get et jwt
+* Liste des jobs de l'entreprise pour une entreprise
+* Liste de tous les jobs pour un candidat
 
-Accès à la liste de tous les jobs pour un utilisateur qui n'est pas une entreprise
+
 * réponse :
     * status 200, liste de **jobs** = [{id, name}, {id, name}, ...]
 
