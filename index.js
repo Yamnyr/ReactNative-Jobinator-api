@@ -5,62 +5,79 @@ const data = {
 	user: [
 		{
 			"id": 1,
-			"name": "IUT",
+			"name": "entr1",
 			"status": "entreprise",
-			"login": "gillar01",
-			"password": "admin"
-		},
-		{
-			"id": 3,
-			"name": "entreprise",
-			"status": "entreprise",
-			"login": "ent1",
-			"password": "ent1"
+			"login": "entr1",
+			"password": "entr1"
 		},
 		{
 			"id": 2,
-			"name": "dupont",
+			"name": "entr2",
+			"status": "entreprise",
+			"login": "entr2",
+			"password": "entr2"
+		},
+		{
+			"id": 3,
+			"name": "user1",
 			"status": "candidat",
-			"login": "toto",
-			"password": "toto"
+			"login": "user1",
+			"password": "user1"
+		},
+		{
+			"id": 4,
+			"name": "user2",
+			"status": "candidat",
+			"login": "user2",
+			"password": "user2"
 		}
 	],
 	job: [
 		{
 			"id": 1,
 			"userId": 1,
-			"name": "surveillant H/F",
-			"description": "Une superbe offre de stage à l'IUT pour forcer les étudiants à arriver à l'heure !",
+			"name": "job 1",
+			"description": "A great job 1",
 		},
 		{
 			"id": 2,
 			"userId": 1,
-			"name": "developeur web fullStack",
-			"description": "Une autre offre pour coder le site web de l'URCA",
+			"name": "job 2",
+			"description": "A great job 2",
 		},
 		{
 			"id": 3,
 			"userId": 1,
-			"name": "developeur web React / Symfony",
-			"description": "Une offre pour créer le SI du département informatique",
+			"name": "job 3",
+			"description": "A great job 3",
 		},
 		{
 			"id": 4,
-			"userId": 3,
-			"name": "concepteur architecte",
-			"description": "refaire l'infra",
+			"userId": 2,
+			"name": "job 4",
+			"description": "A great job 4",
 		}
 	],
 	candidate: [
 		{
 			"id": 1,
 			"jobId": 1,
-			"userId": 2
+			"userId": 3,
 		},
 		{
 			"id": 2,
 			"jobId": 3,
-			"userId": 2
+			"userId": 3
+		},
+		{
+			"id": 3,
+			"jobId": 4,
+			"userId": 3
+		},
+		{
+			"id": 4,
+			"jobId": 1,
+			"userId": 4
 		}
 	]
 };

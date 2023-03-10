@@ -81,8 +81,15 @@ Permet la création d'un nouveau user.
 ### /api/user avec la méthode get et jwt
 
 Permet d'obtenir les informations de l'utilisateur correspondant au token **jwt**
-* réponse : 
-    * status 200, **user** = { id, name, status, login, password }
+* réponse :
+  * status 200, **user** = { id, name, status, login, password }
+
+### /api/user/{id} avec la méthode get et jwt
+
+Permet d'obtenir les informations de l'utilisateur de status "candidat", correspondant à l'id.  
+Seule une entreprise peut accéder aux informations des candidats.  
+* réponse :
+  * status 200, **user** = { id, name, status, login, password }
 
 
 ### /api/jobs avec la méthode get et jwt
@@ -96,7 +103,7 @@ Accès à la liste des jobs de l'utilisateur authentifié par le jwt en fonction
 * réponse :
     * status 200, liste de **jobs** = [{id, name}, {id, name}, ...]
 
-### /api/jobs/:id avec la méthode get et jwt
+### /api/jobs/{id} avec la méthode get et jwt
 
 Accès aux informations completes d'un job.
 * réponse :
@@ -128,6 +135,8 @@ Réalisez une application qui propose à un utilisateur de se logger ou de s'ins
 Après authentification et suivant son rôle, l'utilisateur pourra voir la liste de toutes les offres ou seulement celle lui appartenant.
 
 Une entreprise pourra aussi ajouter une nouvelle offre, ce que ne pourra pas faire un utilisateur non entreprise.
+
+Tous les utilisateurs pourront voir le détail d'une offre.
 
 Les accès à l'api nécessiteront l'utilisation d'un jwt en méthode bearer. Ce token n'ayant pas de limite de temps.
 Cette application ne fourni pas de refresh token.

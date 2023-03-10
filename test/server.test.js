@@ -94,15 +94,19 @@ const data = {
 	]
 }
 
-const url = 'http://localhost:' + config.port;
+const url = 'http://localhost:8888';
 
 describe('server', function () {
 	before(function () {
-		return launch(config.port).then(() => createDb(config, data))
+		return launch(8888).then(() => createDb(config, data))
 	})
 
 	it("server up with status 200", function () {
 		return expect(fetch(url))
+			.to.eventually.have.property('status', 200);
+	})
+	it("route /admin/users give status 200", function () {
+		return expect(fetch(url + "/admin/users"))
 			.to.eventually.have.property('status', 200);
 	})
 	it("server admin route /admin/users give all users", function () {
@@ -163,7 +167,18 @@ describe('server', function () {
 
 	describe("login", function() {
 		it("/login with bad credential give 401", function () {
-			this.timeout(5000);
+			return expect(fetch(
+				url + "/login",
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({login: "user1", password: "user100"})
+				}
+			)).to.eventually.have.property('status', 401);
+		})
+		it("/login with good credential give status 200 and return jwt", function () {
 			return expect(fetch(
 				url + "/login",
 				{
@@ -173,8 +188,20 @@ describe('server', function () {
 					},
 					body: JSON.stringify({login: "user1", password: "user1"})
 				}
-			)).to.eventually.have.property('status', 401);
-		})	
+			)).to.eventually.have.property('status', 200);
+		})
+		it("/login with good credential return jwt", function () {
+			return expect(fetch(
+				url + "/login",
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({login: "user1", password: "user1"})
+				}
+			).then(resp => resp.json())).to.eventually.have.property('jwt');
+		})
 	})
 
 	after(function () { 

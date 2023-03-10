@@ -3,6 +3,5 @@
   "password": "",
   "database": "",
   "host": "jobs.sqlite",
-  "dialect": "sqlite",
-  "operatorsAliases": false
+  "dialect": "sqlite"
 }
