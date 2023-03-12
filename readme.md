@@ -126,22 +126,3 @@ Vous pouvez accéder aux données users et contacts sans token pour en obtenir l
 un script pour mettre en place le forward de port de votre émulateur est fourni dans le package.json :
 
 * "forward": "adb reverse tcp:7000 tcp:7000"
-
-
-# Sujet du TP test - cahier des charges
-
-Réalisez une application qui propose à un utilisateur de se logger ou de s'inscrire sur l'application.
-
-Après authentification et suivant son rôle, l'utilisateur pourra voir la liste de toutes les offres ou seulement celle lui appartenant.
-
-Une entreprise pourra aussi ajouter une nouvelle offre, ce que ne pourra pas faire un utilisateur non entreprise.
-
-Tous les utilisateurs pourront voir le détail d'une offre.
-
-Les accès à l'api nécessiteront l'utilisation d'un jwt en méthode bearer. Ce token n'ayant pas de limite de temps.
-Cette application ne fourni pas de refresh token.
-
-Le dépot gitlab devra porter le nom de : jobinator-front.
-Ajoutez votre enseignant en tant que membre 'reporter'.
-
-Bon dévellopement,
